@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<property name="APP_LOG_DIR" value="." />
+
+	<!-- Console Appender for Spring Boot Logs -->
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Single File Appender for Application Logs -->
+	<appender name="APP_FILE"
+		class="ch.qos.logback.core.FileAppender">
+		<file>${APP_LOG_DIR}/application.log</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd} [%thread] %-5level %logger{36} -
+				%msg%n</pattern>
+		</encoder>
+	</appender>
+
+
+	<!-- Logger for Your Application Logs -->
+	<logger name="com.infosys.reward_system" level="DEBUG"
+		additivity="false">
+		<appender-ref ref="APP_FILE" />
+	</logger>
+
+	<!-- Root Logger for Spring Boot (Logs to Console) -->
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+</configuration>
