@@ -85,8 +85,383 @@ This structured approach ensures the API is robust, scalable, and easy to extend
 Returns reward details for all customers. If date filters are provided (as query parameters), the response will only include transactions within that date range. When no dates are provided, all transactions are used.  
 
 **Example Requests:**  
-- `GET http://localhost:8080/api/rewards` (Fetch rewards for all customers without filtering by date)  
-- `GET http://localhost:8080/api/rewards?startDate=2027-11-15&endDate=2024-12-15` (Fetch rewards for all customers within the specified date range)  
+- `GET http://localhost:8080/api/rewards` (Fetch rewards for all customers without filtering by date)
+
+```json
+[
+    {
+        "customerId": 1,
+        "customerName": "Saurabh",
+        "totalRewardPoints": 645,
+        "monthlyRewards": {
+            "JANUARY": 155,
+            "DECEMBER": 330,
+            "NOVEMBER": 160
+        },
+        "transactions": [
+            {
+                "transactionId": 1,
+                "transactionAmount": 45.00,
+                "transactionDate": "2024-11-03",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 2,
+                "transactionAmount": 75.50,
+                "transactionDate": "2024-11-10",
+                "transactionRewardPoints": 25
+            },
+            {
+                "transactionId": 3,
+                "transactionAmount": 120.00,
+                "transactionDate": "2024-11-17",
+                "transactionRewardPoints": 90
+            },
+            {
+                "transactionId": 4,
+                "transactionAmount": 95.00,
+                "transactionDate": "2024-11-24",
+                "transactionRewardPoints": 45
+            },
+            {
+                "transactionId": 5,
+                "transactionAmount": 30.00,
+                "transactionDate": "2024-12-01",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 6,
+                "transactionAmount": 110.00,
+                "transactionDate": "2024-12-08",
+                "transactionRewardPoints": 70
+            },
+            {
+                "transactionId": 7,
+                "transactionAmount": 60.00,
+                "transactionDate": "2024-12-15",
+                "transactionRewardPoints": 10
+            },
+            {
+                "transactionId": 8,
+                "transactionAmount": 200.00,
+                "transactionDate": "2024-12-22",
+                "transactionRewardPoints": 250
+            },
+            {
+                "transactionId": 9,
+                "transactionAmount": 20.00,
+                "transactionDate": "2025-01-05",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 10,
+                "transactionAmount": 55.00,
+                "transactionDate": "2025-01-12",
+                "transactionRewardPoints": 5
+            },
+            {
+                "transactionId": 11,
+                "transactionAmount": 135.00,
+                "transactionDate": "2025-01-19",
+                "transactionRewardPoints": 120
+            },
+            {
+                "transactionId": 12,
+                "transactionAmount": 80.00,
+                "transactionDate": "2025-01-26",
+                "transactionRewardPoints": 30
+            }
+        ]
+    },
+    {
+        "customerId": 2,
+        "customerName": "Vrishali",
+        "totalRewardPoints": 630,
+        "monthlyRewards": {
+            "JANUARY": 125,
+            "DECEMBER": 315,
+            "NOVEMBER": 190
+        },
+        "transactions": [
+            {
+                "transactionId": 13,
+                "transactionAmount": 48.00,
+                "transactionDate": "2024-11-04",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 14,
+                "transactionAmount": 90.00,
+                "transactionDate": "2024-11-11",
+                "transactionRewardPoints": 40
+            },
+            {
+                "transactionId": 15,
+                "transactionAmount": 140.00,
+                "transactionDate": "2024-11-18",
+                "transactionRewardPoints": 130
+            },
+            {
+                "transactionId": 16,
+                "transactionAmount": 70.00,
+                "transactionDate": "2024-11-25",
+                "transactionRewardPoints": 20
+            },
+            {
+                "transactionId": 17,
+                "transactionAmount": 25.00,
+                "transactionDate": "2024-12-02",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 18,
+                "transactionAmount": 105.00,
+                "transactionDate": "2024-12-09",
+                "transactionRewardPoints": 60
+            },
+            {
+                "transactionId": 19,
+                "transactionAmount": 65.00,
+                "transactionDate": "2024-12-16",
+                "transactionRewardPoints": 15
+            },
+            {
+                "transactionId": 20,
+                "transactionAmount": 195.00,
+                "transactionDate": "2024-12-23",
+                "transactionRewardPoints": 240
+            },
+            {
+                "transactionId": 21,
+                "transactionAmount": 35.00,
+                "transactionDate": "2025-01-06",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 22,
+                "transactionAmount": 50.00,
+                "transactionDate": "2025-01-13",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 23,
+                "transactionAmount": 120.00,
+                "transactionDate": "2025-01-20",
+                "transactionRewardPoints": 90
+            },
+            {
+                "transactionId": 24,
+                "transactionAmount": 85.00,
+                "transactionDate": "2025-01-27",
+                "transactionRewardPoints": 35
+            }
+        ]
+    },
+    {
+        "customerId": 3,
+        "customerName": "Tamilarasan",
+        "totalRewardPoints": 618,
+        "monthlyRewards": {
+            "JANUARY": 137,
+            "DECEMBER": 338,
+            "NOVEMBER": 143
+        },
+        "transactions": [
+            {
+                "transactionId": 25,
+                "transactionAmount": 42.00,
+                "transactionDate": "2024-11-05",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 26,
+                "transactionAmount": 88.00,
+                "transactionDate": "2024-11-12",
+                "transactionRewardPoints": 38
+            },
+            {
+                "transactionId": 27,
+                "transactionAmount": 125.00,
+                "transactionDate": "2024-11-19",
+                "transactionRewardPoints": 100
+            },
+            {
+                "transactionId": 28,
+                "transactionAmount": 55.00,
+                "transactionDate": "2024-11-26",
+                "transactionRewardPoints": 5
+            },
+            {
+                "transactionId": 29,
+                "transactionAmount": 29.00,
+                "transactionDate": "2024-12-03",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 30,
+                "transactionAmount": 130.00,
+                "transactionDate": "2024-12-10",
+                "transactionRewardPoints": 110
+            },
+            {
+                "transactionId": 31,
+                "transactionAmount": 68.00,
+                "transactionDate": "2024-12-17",
+                "transactionRewardPoints": 18
+            },
+            {
+                "transactionId": 32,
+                "transactionAmount": 180.00,
+                "transactionDate": "2024-12-24",
+                "transactionRewardPoints": 210
+            },
+            {
+                "transactionId": 33,
+                "transactionAmount": 40.00,
+                "transactionDate": "2025-01-07",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 34,
+                "transactionAmount": 72.00,
+                "transactionDate": "2025-01-14",
+                "transactionRewardPoints": 22
+            },
+            {
+                "transactionId": 35,
+                "transactionAmount": 110.00,
+                "transactionDate": "2025-01-21",
+                "transactionRewardPoints": 70
+            },
+            {
+                "transactionId": 36,
+                "transactionAmount": 95.00,
+                "transactionDate": "2025-01-28",
+                "transactionRewardPoints": 45
+            }
+        ]
+    }
+]
+```
+
+
+- `GET http://localhost:8080/api/rewards?startDate=2024-11-15&endDate=2024-12-15` (Fetch rewards for all customers within the specified date range)  
+
+```json
+[
+    {
+        "customerId": 1,
+        "customerName": "Saurabh",
+        "totalRewardPoints": 215,
+        "monthlyRewards": {
+            "DECEMBER": 80,
+            "NOVEMBER": 135
+        },
+        "transactions": [
+            {
+                "transactionId": 3,
+                "transactionAmount": 120.00,
+                "transactionDate": "2024-11-17",
+                "transactionRewardPoints": 90
+            },
+            {
+                "transactionId": 4,
+                "transactionAmount": 95.00,
+                "transactionDate": "2024-11-24",
+                "transactionRewardPoints": 45
+            },
+            {
+                "transactionId": 5,
+                "transactionAmount": 30.00,
+                "transactionDate": "2024-12-01",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 6,
+                "transactionAmount": 110.00,
+                "transactionDate": "2024-12-08",
+                "transactionRewardPoints": 70
+            },
+            {
+                "transactionId": 7,
+                "transactionAmount": 60.00,
+                "transactionDate": "2024-12-15",
+                "transactionRewardPoints": 10
+            }
+        ]
+    },
+    {
+        "customerId": 2,
+        "customerName": "Vrishali",
+        "totalRewardPoints": 210,
+        "monthlyRewards": {
+            "DECEMBER": 60,
+            "NOVEMBER": 150
+        },
+        "transactions": [
+            {
+                "transactionId": 15,
+                "transactionAmount": 140.00,
+                "transactionDate": "2024-11-18",
+                "transactionRewardPoints": 130
+            },
+            {
+                "transactionId": 16,
+                "transactionAmount": 70.00,
+                "transactionDate": "2024-11-25",
+                "transactionRewardPoints": 20
+            },
+            {
+                "transactionId": 17,
+                "transactionAmount": 25.00,
+                "transactionDate": "2024-12-02",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 18,
+                "transactionAmount": 105.00,
+                "transactionDate": "2024-12-09",
+                "transactionRewardPoints": 60
+            }
+        ]
+    },
+    {
+        "customerId": 3,
+        "customerName": "Tamilarasan",
+        "totalRewardPoints": 215,
+        "monthlyRewards": {
+            "DECEMBER": 110,
+            "NOVEMBER": 105
+        },
+        "transactions": [
+            {
+                "transactionId": 27,
+                "transactionAmount": 125.00,
+                "transactionDate": "2024-11-19",
+                "transactionRewardPoints": 100
+            },
+            {
+                "transactionId": 28,
+                "transactionAmount": 55.00,
+                "transactionDate": "2024-11-26",
+                "transactionRewardPoints": 5
+            },
+            {
+                "transactionId": 29,
+                "transactionAmount": 29.00,
+                "transactionDate": "2024-12-03",
+                "transactionRewardPoints": 0
+            },
+            {
+                "transactionId": 30,
+                "transactionAmount": 130.00,
+                "transactionDate": "2024-12-10",
+                "transactionRewardPoints": 110
+            }
+        ]
+    }
+]
+```
 
 ---
 
@@ -99,4 +474,136 @@ Returns reward details for the specified customer. Date filters can be optionall
 
 **Example Requests:**  
 - `GET http://localhost:8080/api/rewards/1` (Fetch rewards for customer with ID 1 without filtering by date)  
-- `GET http://localhost:8080/api/rewards/1?startDate=2027-11-15&endDate=2024-12-15` (Fetch rewards for customer with ID 1 within the specified date range)  
+
+```json
+{
+    "customerId": 1,
+    "customerName": "Saurabh",
+    "totalRewardPoints": 645,
+    "monthlyRewards": {
+        "JANUARY": 155,
+        "DECEMBER": 330,
+        "NOVEMBER": 160
+    },
+    "transactions": [
+        {
+            "transactionId": 1,
+            "transactionAmount": 45.00,
+            "transactionDate": "2024-11-03",
+            "transactionRewardPoints": 0
+        },
+        {
+            "transactionId": 2,
+            "transactionAmount": 75.50,
+            "transactionDate": "2024-11-10",
+            "transactionRewardPoints": 25
+        },
+        {
+            "transactionId": 3,
+            "transactionAmount": 120.00,
+            "transactionDate": "2024-11-17",
+            "transactionRewardPoints": 90
+        },
+        {
+            "transactionId": 4,
+            "transactionAmount": 95.00,
+            "transactionDate": "2024-11-24",
+            "transactionRewardPoints": 45
+        },
+        {
+            "transactionId": 5,
+            "transactionAmount": 30.00,
+            "transactionDate": "2024-12-01",
+            "transactionRewardPoints": 0
+        },
+        {
+            "transactionId": 6,
+            "transactionAmount": 110.00,
+            "transactionDate": "2024-12-08",
+            "transactionRewardPoints": 70
+        },
+        {
+            "transactionId": 7,
+            "transactionAmount": 60.00,
+            "transactionDate": "2024-12-15",
+            "transactionRewardPoints": 10
+        },
+        {
+            "transactionId": 8,
+            "transactionAmount": 200.00,
+            "transactionDate": "2024-12-22",
+            "transactionRewardPoints": 250
+        },
+        {
+            "transactionId": 9,
+            "transactionAmount": 20.00,
+            "transactionDate": "2025-01-05",
+            "transactionRewardPoints": 0
+        },
+        {
+            "transactionId": 10,
+            "transactionAmount": 55.00,
+            "transactionDate": "2025-01-12",
+            "transactionRewardPoints": 5
+        },
+        {
+            "transactionId": 11,
+            "transactionAmount": 135.00,
+            "transactionDate": "2025-01-19",
+            "transactionRewardPoints": 120
+        },
+        {
+            "transactionId": 12,
+            "transactionAmount": 80.00,
+            "transactionDate": "2025-01-26",
+            "transactionRewardPoints": 30
+        }
+    ]
+}
+```
+
+- `GET http://localhost:8080/api/rewards/1?startDate=2024-11-15&endDate=2024-12-15` (Fetch rewards for customer with ID 1 within the specified date range)  
+
+```json
+{
+    "customerId": 1,
+    "customerName": "Saurabh",
+    "totalRewardPoints": 215,
+    "monthlyRewards": {
+        "DECEMBER": 80,
+        "NOVEMBER": 135
+    },
+    "transactions": [
+        {
+            "transactionId": 3,
+            "transactionAmount": 120.00,
+            "transactionDate": "2024-11-17",
+            "transactionRewardPoints": 90
+        },
+        {
+            "transactionId": 4,
+            "transactionAmount": 95.00,
+            "transactionDate": "2024-11-24",
+            "transactionRewardPoints": 45
+        },
+        {
+            "transactionId": 5,
+            "transactionAmount": 30.00,
+            "transactionDate": "2024-12-01",
+            "transactionRewardPoints": 0
+        },
+        {
+            "transactionId": 6,
+            "transactionAmount": 110.00,
+            "transactionDate": "2024-12-08",
+            "transactionRewardPoints": 70
+        },
+        {
+            "transactionId": 7,
+            "transactionAmount": 60.00,
+            "transactionDate": "2024-12-15",
+            "transactionRewardPoints": 10
+        }
+    ]
+}
+```
