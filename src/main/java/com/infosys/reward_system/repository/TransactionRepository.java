@@ -12,10 +12,11 @@ import com.infosys.reward_system.model.Transaction;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 	List<Transaction> findByCustomerId(int customerId);
+
 	List<Transaction> findByCustomerIdAndTransactionDateBetween(int customerId, LocalDate startDate, LocalDate endDate);
-	
+
 	@Query("SELECT DISTINCT t.customerId FROM Transaction t")
 	List<Integer> findDistinctCustomerIds();
-	
+
 	boolean existsByCustomerId(int customerId);
 }

@@ -32,69 +32,65 @@ import com.infosys.reward_system.repository.TransactionRepository;
 @ExtendWith(MockitoExtension.class)
 class RewardServiceTest {
 
-    @Mock
-    private TransactionRepository transactionRepository;
+	@Mock
+	private TransactionRepository transactionRepository;
 
-    @InjectMocks
-    private RewardService rewardService;
+	@InjectMocks
+	private RewardService rewardService;
 
-    private List<Transaction> sampleTransactions;
+	private List<Transaction> sampleTransactions;
 
-    @BeforeEach
-    void setUp() {
-        sampleTransactions = Arrays.asList(
-            new Transaction(1, 101, "John Doe", BigDecimal.valueOf(120), LocalDate.of(2024, 1, 10)),
-            new Transaction(2, 101, "John Doe", BigDecimal.valueOf(75), LocalDate.of(2024, 2, 15)),
-            new Transaction(3, 101, "John Doe", BigDecimal.valueOf(30), LocalDate.of(2024, 3, 20))
-        );
-    }
+	@BeforeEach
+	void setUp() {
+		sampleTransactions = Arrays.asList(
+				new Transaction(1, 101, "John Doe", BigDecimal.valueOf(120), LocalDate.of(2024, 1, 10)),
+				new Transaction(2, 101, "John Doe", BigDecimal.valueOf(75), LocalDate.of(2024, 2, 15)),
+				new Transaction(3, 101, "John Doe", BigDecimal.valueOf(30), LocalDate.of(2024, 3, 20)));
+	}
 
-    @Test
-    void testCalculateCustomerRewards_ValidCustomer() {
-        when(transactionRepository.findByCustomerIdAndTransactionDateBetween(anyInt(), any(), any()))
-                .thenReturn(sampleTransactions);
+	@Test
+	void testCalculateCustomerRewards_ValidCustomer() {
+		when(transactionRepository.findByCustomerIdAndTransactionDateBetween(anyInt(), any(), any()))
+				.thenReturn(sampleTransactions);
 
-        RewardResponseDto response = rewardService.calculateCustomerRewards(101, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 31));
+		RewardResponseDto response = rewardService.calculateCustomerRewards(101, LocalDate.of(2024, 1, 1),
+				LocalDate.of(2024, 3, 31));
 
-        assertEquals(101, response.getCustomerId());
-        assertEquals("John Doe", response.getCustomerName());
-        assertEquals(90 + 25, response.getTotalRewardPoints()); // Rs. 120 -> 90 points, Rs. 75 -> 25 points
+		assertEquals(101, response.getCustomerId());
+		assertEquals("John Doe", response.getCustomerName());
+		assertEquals(90 + 25, response.getTotalRewardPoints()); // Rs. 120 -> 90 points, Rs. 75 -> 25 points
 
-        Map<String, Integer> expectedMonthlyRewards = new HashMap<>();
-        expectedMonthlyRewards.put("2024-01", 90);
-        expectedMonthlyRewards.put("2024-02", 25);
-        
-        assertEquals(expectedMonthlyRewards, response.getMonthlyRewards());
-    }
+		Map<String, Integer> expectedMonthlyRewards = new HashMap<>();
+		expectedMonthlyRewards.put("2024-01", 90);
+		expectedMonthlyRewards.put("2024-02", 25);
 
-    @Test
-    void testCalculateCustomerRewards_CustomerNotFound() {
-        when(transactionRepository.findByCustomerIdAndTransactionDateBetween(anyInt(), any(), any()))
-                .thenReturn(Collections.emptyList());
+		assertEquals(expectedMonthlyRewards, response.getMonthlyRewards());
+	}
 
-        assertThrows(CustomerNotFoundException.class,
-                () -> rewardService.calculateCustomerRewards(102, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 31)));
-    }
+	@Test
+	void testCalculateCustomerRewards_CustomerNotFound() {
+		when(transactionRepository.findByCustomerIdAndTransactionDateBetween(anyInt(), any(), any()))
+				.thenReturn(Collections.emptyList());
 
-    @Test
-    void testCalculateAllCustomerRewardsAsync() {
-        when(transactionRepository.findDistinctCustomerIds()).thenReturn(Arrays.asList(101));
+		assertThrows(CustomerNotFoundException.class,
+				() -> rewardService.calculateCustomerRewards(102, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 31)));
+	}
 
-        when(transactionRepository.findByCustomerIdAndTransactionDateBetween(
-                eq(101), any(LocalDate.class), any(LocalDate.class)))
-            .thenReturn(sampleTransactions);
+	@Test
+	void testCalculateAllCustomerRewardsAsync() {
+		when(transactionRepository.findDistinctCustomerIds()).thenReturn(Arrays.asList(101));
 
-        CompletableFuture<List<RewardResponseDto>> futureResponse = 
-                rewardService.calculateAllCustomerRewardsAsync(
-                    LocalDate.of(2024, 1, 1), 
-                    LocalDate.of(2024, 3, 31)
-                );
+		when(transactionRepository.findByCustomerIdAndTransactionDateBetween(eq(101), any(LocalDate.class),
+				any(LocalDate.class))).thenReturn(sampleTransactions);
 
-            List<RewardResponseDto> responseList = futureResponse.join();
-            assertFalse(responseList.isEmpty());
-            
-            RewardResponseDto response = responseList.get(0);
-            assertEquals(101, response.getCustomerId());
-            assertEquals("John Doe", response.getCustomerName());
-    }
+		CompletableFuture<List<RewardResponseDto>> futureResponse = rewardService
+				.calculateAllCustomerRewardsAsync(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 31));
+
+		List<RewardResponseDto> responseList = futureResponse.join();
+		assertFalse(responseList.isEmpty());
+
+		RewardResponseDto response = responseList.get(0);
+		assertEquals(101, response.getCustomerId());
+		assertEquals("John Doe", response.getCustomerName());
+	}
 }

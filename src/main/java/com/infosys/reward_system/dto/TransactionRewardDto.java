@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TransactionRewardDto {
 	private int transactionId;
-    private BigDecimal transactionAmount;
-    private LocalDate transactionDate;
-    private int transactionRewardPoints;
+	private BigDecimal transactionAmount;
+	private LocalDate transactionDate;
+	private int transactionRewardPoints;
 
 }

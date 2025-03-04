@@ -15,7 +15,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 /**
  * Entity representing a transaction record.
  */
@@ -27,19 +26,19 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Transaction {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int transactionId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int transactionId;
 
-    @Column(name = "customer_id")
-    private int customerId;
-    
-    @Column(name="customer_name")
-    private String customerName;
+	@Column(name = "customer_id")
+	private int customerId;
 
-    @Column(name = "amount", precision = 10, scale = 2)
-    private BigDecimal amount;
+	@Column(name = "customer_name")
+	private String customerName;
 
-    @Column(name = "transaction_date")
-    private LocalDate transactionDate;
+	@Column(name = "amount", precision = 10, scale = 2)
+	private BigDecimal amount;
+
+	@Column(name = "transaction_date")
+	private LocalDate transactionDate;
 
 }

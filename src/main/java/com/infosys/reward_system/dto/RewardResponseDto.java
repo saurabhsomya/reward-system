@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RewardResponseDto {
-	 private int customerId;
-	 private String customerName;
-	 private int totalRewardPoints;
-	 private Map<String, Integer> monthlyRewards;
-	 private List<TransactionRewardDto> transactions;
+	private int customerId;
+	private String customerName;
+	private int totalRewardPoints;
+	private Map<String, Integer> monthlyRewards;
+	private List<TransactionRewardDto> transactions;
 }

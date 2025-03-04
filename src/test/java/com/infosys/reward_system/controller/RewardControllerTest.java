@@ -34,100 +34,87 @@ import com.infosys.reward_system.service.RewardService;
 
 @ExtendWith(MockitoExtension.class)
 public class RewardControllerTest {
-	
+
 	@Mock
-    private RewardService rewardService;
-	
+	private RewardService rewardService;
+
 	@InjectMocks
-    private RewardController rewardController;
-	
+	private RewardController rewardController;
+
 	private MockMvc mockMvc;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(rewardController).setControllerAdvice(new GlobalExceptionHandler()).build();
-    }
+	@BeforeEach
+	void setUp() {
+		mockMvc = MockMvcBuilders.standaloneSetup(rewardController).setControllerAdvice(new GlobalExceptionHandler())
+				.build();
+	}
 
-    @Test
-    void testGetAllCustomerRewards_ValidRequest() throws Exception {
-        LocalDate startDate = LocalDate.of(2024, 1, 1);
-        LocalDate endDate = LocalDate.of(2025, 12, 30);
+	@Test
+	void testGetAllCustomerRewards_ValidRequest() throws Exception {
+		LocalDate startDate = LocalDate.of(2024, 1, 1);
+		LocalDate endDate = LocalDate.of(2025, 12, 30);
 
-        List<RewardResponseDto> mockResponse = Collections.singletonList(
-            new RewardResponseDto(1, "John Doe", 150, Collections.emptyMap(), Collections.emptyList())
-        );
+		List<RewardResponseDto> mockResponse = Collections.singletonList(
+				new RewardResponseDto(1, "John Doe", 150, Collections.emptyMap(), Collections.emptyList()));
 
-        when(rewardService.calculateAllCustomerRewardsAsync(startDate, endDate))
-                .thenReturn(CompletableFuture.completedFuture(mockResponse));
+		when(rewardService.calculateAllCustomerRewardsAsync(startDate, endDate))
+				.thenReturn(CompletableFuture.completedFuture(mockResponse));
 
-        org.springframework.test.web.servlet.MvcResult mvcResult = mockMvc.perform(get("/api/rewards")
-                .param("startDate", "2024-01-01")
-                .param("endDate", "2025-12-30")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(request().asyncStarted())
-                .andReturn();
+		org.springframework.test.web.servlet.MvcResult mvcResult = mockMvc
+				.perform(get("/api/rewards").param("startDate", "2024-01-01").param("endDate", "2025-12-30")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(request().asyncStarted()).andReturn();
 
-        mockMvc.perform(asyncDispatch(mvcResult))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].customerId").value(1))
-                .andExpect(jsonPath("$[0].customerName").value("John Doe"))
-                .andExpect(jsonPath("$[0].totalRewardPoints").value(150));
+		mockMvc.perform(asyncDispatch(mvcResult)).andExpect(status().isOk()).andExpect(jsonPath("$.size()").value(1))
+				.andExpect(jsonPath("$[0].customerId").value(1))
+				.andExpect(jsonPath("$[0].customerName").value("John Doe"))
+				.andExpect(jsonPath("$[0].totalRewardPoints").value(150));
 
-        verify(rewardService, times(1)).calculateAllCustomerRewardsAsync(startDate, endDate);
-    }
-    
-    @Test
-    void testGetAllCustomerRewards_InvalidDateRange() throws Exception {
-        mockMvc.perform(get("/api/rewards")
-                .param("startDate", "2024-03-31")
-                .param("endDate", "2024-01-01")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())  // Ensure HTTP 400
-                .andExpect(jsonPath("$.status").value(400)) // Check status
-                .andExpect(jsonPath("$.error").value("Bad Request")) // Check error type
-                .andExpect(jsonPath("$.message").value("Invalid date range: startDate (2024-03-31) must be before or equal to endDate (2024-01-01)")); // Check message
+		verify(rewardService, times(1)).calculateAllCustomerRewardsAsync(startDate, endDate);
+	}
 
-        verify(rewardService, never()).calculateAllCustomerRewardsAsync(any(), any());
-    }
-    
-    
-    @Test
-    void testGetCustomerRewards_ValidRequest() throws Exception {
-        int customerId = 1;
-        LocalDate startDate = LocalDate.of(2024, 1, 1);
-        LocalDate endDate = LocalDate.of(2024, 3, 30);
+	@Test
+	void testGetAllCustomerRewards_InvalidDateRange() throws Exception {
+		mockMvc.perform(get("/api/rewards").param("startDate", "2024-03-31").param("endDate", "2024-01-01")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()) // Ensure HTTP 400
+				.andExpect(jsonPath("$.status").value(400)) // Check status
+				.andExpect(jsonPath("$.error").value("Bad Request")) // Check error type
+				.andExpect(jsonPath("$.message").value(
+						"Invalid date range: startDate (2024-03-31) must be before or equal to endDate (2024-01-01)")); // Check
+																														// message
 
-        RewardResponseDto mockResponse = new RewardResponseDto(1, "John Doe", 150, Collections.emptyMap(), Collections.emptyList());
+		verify(rewardService, never()).calculateAllCustomerRewardsAsync(any(), any());
+	}
 
-        when(rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate))
-                .thenReturn(CompletableFuture.completedFuture(mockResponse));
+	@Test
+	void testGetCustomerRewards_ValidRequest() throws Exception {
+		int customerId = 1;
+		LocalDate startDate = LocalDate.of(2024, 1, 1);
+		LocalDate endDate = LocalDate.of(2024, 3, 30);
 
-        MvcResult mvcResult = mockMvc.perform(get("/api/rewards/1")
-                .param("startDate", "2024-01-01")
-                .param("endDate", "2024-03-30")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(request().asyncStarted())
-                .andReturn();
+		RewardResponseDto mockResponse = new RewardResponseDto(1, "John Doe", 150, Collections.emptyMap(),
+				Collections.emptyList());
 
-        mockMvc.perform(asyncDispatch(mvcResult))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.customerId").value(1))
-                .andExpect(jsonPath("$.customerName").value("John Doe"))
-                .andExpect(jsonPath("$.totalRewardPoints").value(150));
+		when(rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate))
+				.thenReturn(CompletableFuture.completedFuture(mockResponse));
 
-        verify(rewardService, times(1)).calculateCustomerRewardsAsync(customerId, startDate, endDate);
-    }
+		MvcResult mvcResult = mockMvc.perform(get("/api/rewards/1").param("startDate", "2024-01-01")
+				.param("endDate", "2024-03-30").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(request().asyncStarted()).andReturn();
 
-    
-    @Test
-    void testGetCustomerRewards_InvalidDateRange() throws Exception {
-        mockMvc.perform(get("/api/rewards/1")
-                .param("startDate", "2024-03-31")
-                .param("endDate", "2024-01-01"))
-                .andExpect(status().isBadRequest());
+		mockMvc.perform(asyncDispatch(mvcResult)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.customerId").value(1)).andExpect(jsonPath("$.customerName").value("John Doe"))
+				.andExpect(jsonPath("$.totalRewardPoints").value(150));
 
-        verify(rewardService, never()).calculateCustomerRewardsAsync(anyInt(), any(), any());
-    }
+		verify(rewardService, times(1)).calculateCustomerRewardsAsync(customerId, startDate, endDate);
+	}
+
+	@Test
+	void testGetCustomerRewards_InvalidDateRange() throws Exception {
+		mockMvc.perform(get("/api/rewards/1").param("startDate", "2024-03-31").param("endDate", "2024-01-01"))
+				.andExpect(status().isBadRequest());
+
+		verify(rewardService, never()).calculateCustomerRewardsAsync(anyInt(), any(), any());
+	}
 
 }

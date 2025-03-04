@@ -23,46 +23,46 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class RewardService {
-	
+
 	private TransactionRepository transactionRepository;
-	
+
 	public RewardService(TransactionRepository transactionRepository) {
 		this.transactionRepository = transactionRepository;
 	}
 
 	@Async
-	public CompletableFuture<List<RewardResponseDto>> calculateAllCustomerRewardsAsync(LocalDate startDate, LocalDate endDate) {
+	public CompletableFuture<List<RewardResponseDto>> calculateAllCustomerRewardsAsync(LocalDate startDate,
+			LocalDate endDate) {
 		log.info("Calculating rewards for all customers...");
-		
+
 		List<Integer> distinctCustomerIds = transactionRepository.findDistinctCustomerIds();
 		List<RewardResponseDto> allCustomerRewardsList = distinctCustomerIds.stream()
-				.map(id -> calculateCustomerRewards(id, startDate, endDate))
-				.collect(Collectors.toList());
-		
+				.map(id -> calculateCustomerRewards(id, startDate, endDate)).collect(Collectors.toList());
+
 		return CompletableFuture.completedFuture(allCustomerRewardsList);
 
 	}
-	
+
 	@Async
-	public CompletableFuture<RewardResponseDto> calculateCustomerRewardsAsync(int customerId, LocalDate startDate, LocalDate endDate) {
+	public CompletableFuture<RewardResponseDto> calculateCustomerRewardsAsync(int customerId, LocalDate startDate,
+			LocalDate endDate) {
 		return CompletableFuture.completedFuture(calculateCustomerRewards(customerId, startDate, endDate));
 	}
 
 	public RewardResponseDto calculateCustomerRewards(int customerId, LocalDate startDate, LocalDate endDate) {
 		log.info("Calculating rewards for customer {}", customerId);
-		
+
 		if (!transactionRepository.existsByCustomerId(customerId)) {
-	        log.error("Customer {} not found", customerId);
-	        throw new CustomerNotFoundException(customerId);
+			log.error("Customer {} not found", customerId);
+			throw new CustomerNotFoundException(customerId);
 		}
-		
-		List<Transaction> customerTransactions = getCustomerTransactions(customerId, startDate, endDate);	
+
+		List<Transaction> customerTransactions = getCustomerTransactions(customerId, startDate, endDate);
 
 		if (customerTransactions.isEmpty()) {
-			log.warn("No transactions found for customer {} in date range {} to {}", 
-		            customerId, startDate, endDate);
+			log.warn("No transactions found for customer {} in date range {} to {}", customerId, startDate, endDate);
 			return createEmptyRewardResponseDto(customerId);
-		}	
+		}
 
 		int totalRewardPoints = 0;
 		String customerName = customerTransactions.get(0).getCustomerName();
@@ -79,10 +79,11 @@ public class RewardService {
 			}
 			transactionRewardDtos.add(createTransactionRewardDto(row, rewardPoints));
 		}
-		
+
 		log.debug("Rewards calculated: CustomerId={}, TotalPoints={}", customerId, totalRewardPoints);
 
-		return createRewardResponseDto(customerId, customerName, totalRewardPoints, monthlyRewards, transactionRewardDtos);
+		return createRewardResponseDto(customerId, customerName, totalRewardPoints, monthlyRewards,
+				transactionRewardDtos);
 
 	}
 
@@ -95,41 +96,28 @@ public class RewardService {
 			return (amount - 100) * 2 + 50;
 		}
 	}
-	
-    private TransactionRewardDto createTransactionRewardDto(Transaction transaction, int rewardPoints) {
-        return TransactionRewardDto.builder()
-                .transactionId(transaction.getTransactionId())
-                .transactionAmount(transaction.getAmount())
-                .transactionDate(transaction.getTransactionDate())
-                .transactionRewardPoints(rewardPoints)
-                .build();
-    }
-    
-    private RewardResponseDto createRewardResponseDto(int customerId, String customerName, int totalRewardPoints,
-            Map<String, Integer> monthlyRewards, List<TransactionRewardDto> transactionRewardDtos) {
-        return RewardResponseDto.builder()
-                .customerId(customerId)
-                .customerName(customerName)
-                .totalRewardPoints(totalRewardPoints)
-                .monthlyRewards(monthlyRewards)
-                .transactions(transactionRewardDtos)
-                .build();
-    }
-	
+
+	private TransactionRewardDto createTransactionRewardDto(Transaction transaction, int rewardPoints) {
+		return TransactionRewardDto.builder().transactionId(transaction.getTransactionId())
+				.transactionAmount(transaction.getAmount()).transactionDate(transaction.getTransactionDate())
+				.transactionRewardPoints(rewardPoints).build();
+	}
+
+	private RewardResponseDto createRewardResponseDto(int customerId, String customerName, int totalRewardPoints,
+			Map<String, Integer> monthlyRewards, List<TransactionRewardDto> transactionRewardDtos) {
+		return RewardResponseDto.builder().customerId(customerId).customerName(customerName)
+				.totalRewardPoints(totalRewardPoints).monthlyRewards(monthlyRewards).transactions(transactionRewardDtos)
+				.build();
+	}
+
 	private List<Transaction> getCustomerTransactions(int customerId, LocalDate startDate, LocalDate endDate) {
-		 return (startDate == null || endDate == null) ? 
-		           transactionRepository.findByCustomerId(customerId) : 
-		           transactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
-    }
-	
+		return (startDate == null || endDate == null) ? transactionRepository.findByCustomerId(customerId)
+				: transactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
+	}
+
 	private RewardResponseDto createEmptyRewardResponseDto(int customerId) {
-	    return RewardResponseDto.builder()
-	        .customerId(customerId)
-	        .customerName("Unknown")
-	        .totalRewardPoints(0)
-	        .monthlyRewards(new HashMap<>())
-	        .transactions(new ArrayList<>())
-	        .build();
+		return RewardResponseDto.builder().customerId(customerId).customerName("Unknown").totalRewardPoints(0)
+				.monthlyRewards(new HashMap<>()).transactions(new ArrayList<>()).build();
 	}
 
 }

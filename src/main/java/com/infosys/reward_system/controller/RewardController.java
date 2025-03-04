@@ -32,8 +32,7 @@ public class RewardController {
 	@GetMapping("/rewards")
 	public CompletableFuture<ResponseEntity<List<RewardResponseDto>>> getAllCustomerRewards(
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-			) {
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 		log.info("Fetching rewards for all customers from {} to {}", startDate, endDate);
 
 		if (isDateRangeInvalid(startDate, endDate)) {
@@ -45,11 +44,9 @@ public class RewardController {
 	}
 
 	@GetMapping("/rewards/{customerId}")
-	public CompletableFuture<ResponseEntity<RewardResponseDto>> getCustomerRewards(
-			@PathVariable int customerId,
+	public CompletableFuture<ResponseEntity<RewardResponseDto>> getCustomerRewards(@PathVariable int customerId,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-			) {
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 		log.info("Fetching rewards for customer {}: startDate {} - endDate {}", customerId, startDate, endDate);
 
 		if (isDateRangeInvalid(startDate, endDate)) {
@@ -57,14 +54,13 @@ public class RewardController {
 			throw new InvalidDateRangeException(startDate, endDate);
 		}
 
-		return rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate)
-				.thenApply(ResponseEntity::ok)
+		return rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate).thenApply(ResponseEntity::ok)
 				.exceptionally(ex -> {
-            if (ex.getCause() instanceof CustomerNotFoundException) {
-                throw (CustomerNotFoundException) ex.getCause();
-            }
-            throw new RuntimeException(ex);
-        });
+					if (ex.getCause() instanceof CustomerNotFoundException) {
+						throw (CustomerNotFoundException) ex.getCause();
+					}
+					throw new RuntimeException(ex);
+				});
 
 	}
 
