@@ -20,16 +20,7 @@ The API follows a well-structured layered architecture to ensure maintainability
 
 - **Repository Layer:**  
   - Uses Spring Data JPA to interact with an in-memory H2 database.  
-  - Provides efficient query methods to fetch transactions by customer and date range.  
-
-
-#### Asynchronous Processing  
-To improve response times and ensure scalability under high-load conditions, the API utilizes asynchronous processing:  
-
-- Uses `@Async` (enabled via `@EnableAsync`) to execute methods in separate threads, preventing the main request-handling thread from blocking.  
-- `CompletableFuture` is leveraged to handle asynchronous execution, allowing tasks to run in the background while returning results when available.  
-- Enhances API performance, particularly when handling large datasets or computationally expensive operations, such as aggregating reward points over thousands of transactions.  
-- Ensures that API consumers receive quick responses while long-running computations continue asynchronously.  
+  - Provides efficient query methods to fetch transactions by customer and date range.   
 
 
 #### Exception Handling  

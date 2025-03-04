@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.infosys.reward_system.dto.RewardResponseDto;
@@ -18,33 +16,27 @@ import com.infosys.reward_system.exception.CustomerNotFoundException;
 import com.infosys.reward_system.model.Transaction;
 import com.infosys.reward_system.repository.TransactionRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class RewardService {
 
 	private TransactionRepository transactionRepository;
 
-	@Async
-	public CompletableFuture<List<RewardResponseDto>> calculateAllCustomerRewardsAsync(LocalDate startDate,
-			LocalDate endDate) {
+	public RewardService(TransactionRepository transactionRepository) {
+		this.transactionRepository = transactionRepository;
+	}
+
+	public List<RewardResponseDto> calculateAllCustomerRewards(LocalDate startDate, LocalDate endDate) {
 		log.info("Calculating rewards for all customers...");
 
 		List<Integer> distinctCustomerIds = transactionRepository.findDistinctCustomerIds();
 		List<RewardResponseDto> allCustomerRewardsList = distinctCustomerIds.stream()
 				.map(id -> calculateCustomerRewards(id, startDate, endDate)).collect(Collectors.toList());
 
-		return CompletableFuture.completedFuture(allCustomerRewardsList);
+		return allCustomerRewardsList;
 
-	}
-
-	@Async
-	public CompletableFuture<RewardResponseDto> calculateCustomerRewardsAsync(int customerId, LocalDate startDate,
-			LocalDate endDate) {
-		return CompletableFuture.completedFuture(calculateCustomerRewards(customerId, startDate, endDate));
 	}
 
 	public RewardResponseDto calculateCustomerRewards(int customerId, LocalDate startDate, LocalDate endDate) {
@@ -104,8 +96,13 @@ public class RewardService {
 	}
 
 	private List<Transaction> getCustomerTransactions(int customerId, LocalDate startDate, LocalDate endDate) {
-		return (startDate == null || endDate == null) ? transactionRepository.findByCustomerId(customerId)
+		log.error("here");
+		List<Transaction> transactions = (startDate == null || endDate == null)
+				? transactionRepository.findByCustomerId(customerId)
 				: transactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
+
+		log.info("Fetched transactions for customer {}: {}", customerId, transactions);
+		return transactions;
 	}
 
 }

@@ -9,15 +9,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+
+import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
+@TestPropertySource(properties = "spring.sql.init.mode=always")
+@Slf4j
 class RewardSystemIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	/**
+	 * Test case: Fetching rewards with an invalid date range
+	 */
+	@Test
+	void testGetRewardsWithInvalidDateRange() throws Exception {
+		mockMvc.perform(get("/api/rewards/{customerId}", 1).param("startDate", "2025-02-01")
+				.param("endDate", "2024-11-01").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(
+						"Invalid date range: startDate (2025-02-01) must be before or equal to endDate (2024-11-01)"));
+	}
 
 	/**
 	 * Test case: Fetching rewards for an existing customer
@@ -36,24 +51,11 @@ class RewardSystemIntegrationTest {
 	 */
 	@Test
 	void testGetRewardsForNonExistentCustomer() throws Exception {
-		MvcResult result = mockMvc
-				.perform(get("/api/rewards/{customerId}", 999).param("startDate", "2024-11-01")
-						.param("endDate", "2025-01-31").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound()) // Expected 404
-				.andReturn();
-
-		System.out.println("Response: " + result.getResponse().getContentAsString());
+		mockMvc.perform(get("/api/rewards/{customerId}", 999).param("startDate", "2024-11-01")
+				.param("endDate", "2025-01-31").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()) // Expect 404
+				.andExpect(jsonPath("$.status").value(404)).andExpect(jsonPath("$.error").value("Not Found"))
+				.andExpect(jsonPath("$.message").value("Customer with ID 999 not found.")).andReturn();
 	}
 
-	/**
-	 * Test case: Fetching rewards with an invalid date range
-	 */
-	@Test
-	void testGetRewardsWithInvalidDateRange() throws Exception {
-		mockMvc.perform(
-				get("/api/rewards/{customerId}", 1).param("startDate", "2025-02-01").param("endDate", "2024-11-01")
-						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(
-						"Invalid date range: startDate (2025-02-01) must be before or equal to endDate (2024-11-01)"));
-	}
 }

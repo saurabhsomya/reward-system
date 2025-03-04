@@ -2,7 +2,6 @@ package com.infosys.reward_system.controller;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class RewardController {
 	}
 
 	@GetMapping("/rewards")
-	public CompletableFuture<ResponseEntity<List<RewardResponseDto>>> getAllCustomerRewards(
+	public ResponseEntity<List<RewardResponseDto>> getAllCustomerRewards(
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 		log.info("Fetching rewards for all customers from {} to {}", startDate, endDate);
@@ -39,11 +38,11 @@ public class RewardController {
 			throw new InvalidDateRangeException(startDate, endDate);
 		}
 
-		return rewardService.calculateAllCustomerRewardsAsync(startDate, endDate).thenApply(ResponseEntity::ok);
+		return ResponseEntity.ok(rewardService.calculateAllCustomerRewards(startDate, endDate));
 	}
 
 	@GetMapping("/rewards/{customerId}")
-	public CompletableFuture<ResponseEntity<RewardResponseDto>> getCustomerRewards(@PathVariable int customerId,
+	public ResponseEntity<RewardResponseDto> getCustomerRewards(@PathVariable int customerId,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 		log.info("Fetching rewards for customer {}: startDate {} - endDate {}", customerId, startDate, endDate);
@@ -53,14 +52,12 @@ public class RewardController {
 			throw new InvalidDateRangeException(startDate, endDate);
 		}
 
-		return rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate)
-				.thenApply(ResponseEntity::ok);
+		return ResponseEntity.ok(rewardService.calculateCustomerRewards(customerId, startDate, endDate));
+
 	}
 
 	private boolean isDateRangeInvalid(LocalDate startDate, LocalDate endDate) {
-
 		return startDate != null && endDate != null && startDate.isAfter(endDate);
-
 	}
 
 }

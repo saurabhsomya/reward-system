@@ -1,21 +1,13 @@
 package com.infosys.reward_system.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,19 +69,18 @@ class RewardServiceTest {
 	}
 
 	@Test
-	void testCalculateAllCustomerRewardsAsync() {
-		when(transactionRepository.findDistinctCustomerIds()).thenReturn(Arrays.asList(101));
+	void testCalculateAllCustomerRewards() {
+		when(transactionRepository.findDistinctCustomerIds()).thenReturn(Collections.singletonList(101));
+		when(transactionRepository.findByCustomerIdAndTransactionDateBetween(anyInt(), any(), any()))
+				.thenReturn(sampleTransactions);
 
-		when(transactionRepository.findByCustomerIdAndTransactionDateBetween(eq(101), any(LocalDate.class),
-				any(LocalDate.class))).thenReturn(sampleTransactions);
+		List<RewardResponseDto> responseList = rewardService.calculateAllCustomerRewards(LocalDate.of(2024, 1, 1),
+				LocalDate.of(2024, 3, 31));
 
-		CompletableFuture<List<RewardResponseDto>> futureResponse = rewardService
-				.calculateAllCustomerRewardsAsync(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 31));
-
-		List<RewardResponseDto> responseList = futureResponse.join();
 		assertFalse(responseList.isEmpty());
-
+		assertEquals(1, responseList.size());
 		RewardResponseDto response = responseList.get(0);
+
 		assertEquals(101, response.getCustomerId());
 		assertEquals("John Doe", response.getCustomerName());
 	}
