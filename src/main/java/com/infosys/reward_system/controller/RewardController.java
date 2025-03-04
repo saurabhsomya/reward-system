@@ -49,7 +49,7 @@ public class RewardController {
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
 			) {
-		log.info("Fetching rewards for all customers from {} to {}", startDate, endDate);
+		log.info("Fetching rewards for customer {}: startDate {} - endDate {}", customerId, startDate, endDate);
 
 		if (isDateRangeInvalid(startDate, endDate)) {
 			log.warn("Invalid date range provided for customer {}: {} - {}", customerId, startDate, endDate);

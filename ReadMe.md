@@ -85,7 +85,7 @@ This structured approach ensures the API is robust, scalable, and easy to extend
 Returns reward details for all customers. If date filters are provided (as query parameters), the response will only include transactions within that date range. When no dates are provided, all transactions are used.  
 
 **Example Requests:**  
-- `GET http://localhost:8080/api/rewards` (Fetch rewards for all customers without filtering by date)
+- `GET http://localhost:9090/api/rewards` (Fetch rewards for all customers without filtering by date)
 
 ```json
 [
@@ -345,7 +345,7 @@ Returns reward details for all customers. If date filters are provided (as query
 ```
 
 
-- `GET http://localhost:8080/api/rewards?startDate=2024-11-15&endDate=2024-12-15` (Fetch rewards for all customers within the specified date range)  
+- `GET http://localhost:9090/api/rewards?startDate=2024-11-15&endDate=2024-12-15` (Fetch rewards for all customers within the specified date range)  
 
 ```json
 [
@@ -473,7 +473,7 @@ Returns reward details for all customers. If date filters are provided (as query
 Returns reward details for the specified customer. Date filters can be optionally applied to narrow down the transactions.  
 
 **Example Requests:**  
-- `GET http://localhost:8080/api/rewards/1` (Fetch rewards for customer with ID 1 without filtering by date)  
+- `GET http://localhost:9090/api/rewards/1` (Fetch rewards for customer with ID 1 without filtering by date)  
 
 ```json
 {
@@ -562,7 +562,7 @@ Returns reward details for the specified customer. Date filters can be optionall
 }
 ```
 
-- `GET http://localhost:8080/api/rewards/1?startDate=2024-11-15&endDate=2024-12-15` (Fetch rewards for customer with ID 1 within the specified date range)  
+- `GET http://localhost:9090/api/rewards/1?startDate=2024-11-15&endDate=2024-12-15` (Fetch rewards for customer with ID 1 within the specified date range)  
 
 ```json
 {

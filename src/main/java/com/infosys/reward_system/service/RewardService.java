@@ -1,7 +1,7 @@
 package com.infosys.reward_system.service;
 
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,17 +18,15 @@ import com.infosys.reward_system.exception.CustomerNotFoundException;
 import com.infosys.reward_system.model.Transaction;
 import com.infosys.reward_system.repository.TransactionRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RewardService {
 	
 	private TransactionRepository transactionRepository;
-	
-	public RewardService(TransactionRepository transactionRepository) {
-		this.transactionRepository = transactionRepository;
-	}
 
 	@Async
 	public CompletableFuture<List<RewardResponseDto>> calculateAllCustomerRewardsAsync(LocalDate startDate, LocalDate endDate) {
@@ -67,9 +65,9 @@ public class RewardService {
 			int rewardPoints = calculateRewardPoints(row.getAmount().intValue());
 			totalRewardPoints += rewardPoints;
 
-			String monthName = Month.of(row.getTransactionDate().getMonthValue()).name();
+			String monthKey = row.getTransactionDate().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 			if (rewardPoints > 0) {
-				monthlyRewards.put(monthName, monthlyRewards.getOrDefault(monthName, 0) + rewardPoints);
+				monthlyRewards.put(monthKey, monthlyRewards.getOrDefault(monthKey, 0) + rewardPoints);
 			}
 			transactionRewardDtos.add(createTransactionRewardDto(row, rewardPoints));
 		}
@@ -111,12 +109,9 @@ public class RewardService {
     }
 	
 	private List<Transaction> getCustomerTransactions(int customerId, LocalDate startDate, LocalDate endDate) {
-        if (startDate != null && endDate != null) {
-            return transactionRepository.findByCustomerIdAndTransactionDateBetween(
-                    customerId, startDate, endDate);
-        } else {
-            return transactionRepository.findByCustomerId(customerId);
-        }
+		 return (startDate == null || endDate == null) ? 
+		           transactionRepository.findByCustomerId(customerId) : 
+		           transactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
     }
 
 }
