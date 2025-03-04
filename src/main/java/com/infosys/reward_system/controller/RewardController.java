@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.infosys.reward_system.dto.RewardResponseDto;
-import com.infosys.reward_system.exception.CustomerNotFoundException;
 import com.infosys.reward_system.exception.InvalidDateRangeException;
 import com.infosys.reward_system.service.RewardService;
 
@@ -54,14 +53,8 @@ public class RewardController {
 			throw new InvalidDateRangeException(startDate, endDate);
 		}
 
-		return rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate).thenApply(ResponseEntity::ok)
-				.exceptionally(ex -> {
-					if (ex.getCause() instanceof CustomerNotFoundException) {
-						throw (CustomerNotFoundException) ex.getCause();
-					}
-					throw new RuntimeException(ex);
-				});
-
+		return rewardService.calculateCustomerRewardsAsync(customerId, startDate, endDate)
+				.thenApply(ResponseEntity::ok);
 	}
 
 	private boolean isDateRangeInvalid(LocalDate startDate, LocalDate endDate) {
