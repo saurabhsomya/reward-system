@@ -51,12 +51,7 @@ class RewardSystemIntegrationTest {
 	@Test
 	void testGetRewardsWithInvalidDateRange() throws Exception {
 		mockMvc.perform(
-				get("/api/rewards/{customerId}", 1).param("startDate", "2025-02-01").param("endDate", "2024-11-01") // Invalid:
-																													// End
-																													// date
-																													// before
-																													// start
-																													// date
+				get("/api/rewards/{customerId}", 1).param("startDate", "2025-02-01").param("endDate", "2024-11-01")
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(
 						"Invalid date range: startDate (2025-02-01) must be before or equal to endDate (2024-11-01)"));
