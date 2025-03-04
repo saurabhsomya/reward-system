@@ -18,15 +18,17 @@ import com.infosys.reward_system.exception.CustomerNotFoundException;
 import com.infosys.reward_system.model.Transaction;
 import com.infosys.reward_system.repository.TransactionRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class RewardService {
 	
 	private TransactionRepository transactionRepository;
+	
+	public RewardService(TransactionRepository transactionRepository) {
+		this.transactionRepository = transactionRepository;
+	}
 
 	@Async
 	public CompletableFuture<List<RewardResponseDto>> calculateAllCustomerRewardsAsync(LocalDate startDate, LocalDate endDate) {
@@ -49,11 +51,17 @@ public class RewardService {
 	public RewardResponseDto calculateCustomerRewards(int customerId, LocalDate startDate, LocalDate endDate) {
 		log.info("Calculating rewards for customer {}", customerId);
 		
+		if (!transactionRepository.existsByCustomerId(customerId)) {
+	        log.error("Customer {} not found", customerId);
+	        throw new CustomerNotFoundException(customerId);
+		}
+		
 		List<Transaction> customerTransactions = getCustomerTransactions(customerId, startDate, endDate);	
 
 		if (customerTransactions.isEmpty()) {
-			log.error("No transactions found for customer {}", customerId);
-			throw new CustomerNotFoundException(customerId);
+			log.warn("No transactions found for customer {} in date range {} to {}", 
+		            customerId, startDate, endDate);
+			return createEmptyRewardResponseDto(customerId);
 		}	
 
 		int totalRewardPoints = 0;
@@ -113,5 +121,15 @@ public class RewardService {
 		           transactionRepository.findByCustomerId(customerId) : 
 		           transactionRepository.findByCustomerIdAndTransactionDateBetween(customerId, startDate, endDate);
     }
+	
+	private RewardResponseDto createEmptyRewardResponseDto(int customerId) {
+	    return RewardResponseDto.builder()
+	        .customerId(customerId)
+	        .customerName("Unknown")
+	        .totalRewardPoints(0)
+	        .monthlyRewards(new HashMap<>())
+	        .transactions(new ArrayList<>())
+	        .build();
+	}
 
 }

@@ -61,8 +61,8 @@ class RewardServiceTest {
         assertEquals(90 + 25, response.getTotalRewardPoints()); // Rs. 120 -> 90 points, Rs. 75 -> 25 points
 
         Map<String, Integer> expectedMonthlyRewards = new HashMap<>();
-        expectedMonthlyRewards.put("JANUARY", 90);
-        expectedMonthlyRewards.put("FEBRUARY", 25);
+        expectedMonthlyRewards.put("2024-01", 90);
+        expectedMonthlyRewards.put("2024-02", 25);
         
         assertEquals(expectedMonthlyRewards, response.getMonthlyRewards());
     }

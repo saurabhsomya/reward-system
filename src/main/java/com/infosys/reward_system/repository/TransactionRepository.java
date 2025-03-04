@@ -17,4 +17,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	@Query("SELECT DISTINCT t.customerId FROM Transaction t")
 	List<Integer> findDistinctCustomerIds();
 	
+	boolean existsByCustomerId(int customerId);
 }
